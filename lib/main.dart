@@ -36,15 +36,39 @@ class HomePageState extends State<HomePage> {
         ],
       ),
       body: WebView(
-        //initialUrl: "https://www.google.com",
-        initialUrl: "https://cyivacom.firebaseapp.com/",
+        initialUrl: "https://www.google.com",
+        //initialUrl: "https://cyivacom.firebaseapp.com/",
         onWebViewCreated: (WebViewController webViewController) {
           _controller.complete(webViewController);
         },
       )
-    );
+     );
   }
 }
+
+Future<bool> _onBackPressed(context) {
+  return showDialog(
+    context: context,
+    builder: (context) =>AlertDialog (
+        title:  Text('정말로 종료하시겠습니까?'),
+        actions: <Widget>[
+          FlatButton(
+            child: Text('예'),
+            onPressed: () {
+              Navigator.of(context).pop(true);
+            },
+          ),
+          FlatButton(
+            child: Text('아니오'),
+            onPressed: () {
+              Navigator.of(context).pop(false);
+            }
+          )
+        ]
+      )
+  );
+}
+
 
 class NavigationControls extends StatelessWidget {
   const NavigationControls(this._webViewControllerFuture);
@@ -58,7 +82,17 @@ class NavigationControls extends StatelessWidget {
       builder: (BuildContext context, AsyncSnapshot<WebViewController> snapshot) {
         final bool webViewReady = snapshot.connectionState == ConnectionState.done;
         final WebViewController controller = snapshot.data;
-        return Row(
+        return WillPopScope (
+          onWillPop: () async {
+            if(await controller.canGoBack()) {
+              controller.goBack();
+            }
+            else {
+              _onBackPressed;
+            }
+
+          },
+          child: Row(
           children: <Widget>[
             IconButton(
               icon: const Icon(Icons.arrow_left),
@@ -91,7 +125,8 @@ class NavigationControls extends StatelessWidget {
                 }
             ),
           ],
-        );
+          )
+          );
       }
     );
   }
