@@ -36,8 +36,8 @@ class HomePageState extends State<HomePage> {
         ],
       ),
       body: WebView(
-        initialUrl: "https://www.google.com",
-        //initialUrl: "https://cyivacom.firebaseapp.com/",
+        //initialUrl: "https://www.google.com",
+        initialUrl: "https://cyivacom.firebaseapp.com/",
         onWebViewCreated: (WebViewController webViewController) {
           _controller.complete(webViewController);
         },
